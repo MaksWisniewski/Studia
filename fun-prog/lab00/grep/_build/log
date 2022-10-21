@@ -1,0 +1,5 @@
+# dune init proj GREP
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Workspace root: /home/max/studia/PF/lista00/grep
+# Auto-detected concurrency: 6
