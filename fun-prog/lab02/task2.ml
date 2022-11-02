@@ -4,13 +4,13 @@
     * if list = head::tail
         then any sublist of list 
         ---> either is some sublist of tail
-        ---> or is obtained from tail  by putting head in the frobt. *)
+        ---> or is obtained from tail by putting head in the front. *)
 
 
 
 let rec sublist = function
     | [] -> [ [] ]
     | hd::tl -> let temp = sublist tl in 
-                temp @ (List.map (fun x -> hd::x) temp)
+                temp @ List.map (fun x -> hd::x) temp
 
 let _ = sublist (1::2::[])

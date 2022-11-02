@@ -6,7 +6,7 @@ let rec merge ?(cmp = (<=)) xs ys =
   | [], _ -> ys
   | _, [] -> xs
   | x :: xs', y :: ys' ->
-    if cmp x y then x :: merge ~cmp:cmp xs' ys else y :: merge ~cmp:cmp xs ys'
+          if cmp x y then x :: merge cmp xs' ys else y :: merge cmp xs ys'
   
 
 (* rewrite merge to be tail recursive funciton*)
@@ -23,6 +23,7 @@ let rec tail_merge ?(cmp = (<=)) xs ys acc =
 let rec take k = function 
     | [] -> []
     | x :: xs -> if k = 0 then [] else x :: take (k - 1) xs
+
 let rec drop k = function
     | [] -> []
     | (_ :: t) as lst -> if k = 0 then lst else drop (k - 1) t
