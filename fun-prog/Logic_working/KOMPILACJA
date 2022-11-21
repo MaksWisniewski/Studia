@@ -1,2 +1,0 @@
-ocamlc -c Logic.mli Logic.ml
-ocamlopt -o chuj logic.ml zad7.ml
