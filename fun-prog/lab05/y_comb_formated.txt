@@ -1,0 +1,88 @@
+Because this video basically said go to wikipedia, I'll try to explain
+what Y Combinator is.
+
+YC is a way to name your function in a language that does not allow
+such pointers. It proves that function names, classes, etc. are just
+syntactic sugar. Let's look at the same example:
+
+function factorialFn(number){
+    return number == 1 ? 1: number * factorialFn(number-1)
+}
+
+The only thing that generates a pointer in lambda calculus is a function
+parameter. So let's rewrite everything to anonymous functions.
+
+// This is the mind bending part, a function takes in the factorial
+function, returns factorial function that takes a number (factorialFn)=>
+  (number) =>  number == 1 ? 1: number * factorialFn(number-1)
+
+Let's call this our Prepared function - we know it would work, but we
+don't know how to run it yet.
+
+So how do we pass the internal function into itself? Looks impossible,
+right? We could just pass garbage(empty function) to get the internal
+function and use this to generate the actual function.
+
+((factorialFn)=>
+  (number) =>  number == 1 ? 1: number * factorialFn(number-1))
+(((factorialFn)=>
+    (number) =>  number == 1 ? 1: number * factorialFn(number-1))
+(()=> console.log('garbage')))
+
+Trying number 2 would return a correct answer, but number 3 would call
+the garbage function.
+
+You could just calculate how many times you will need to recurse and nest
+that many times, so that garbage function would never get called? :P
+Kinda defeats the purpose. What if we made a function that would nest
+functions for us?
+
+Let's look at the same example as in the video of the simplest recursion:
+
+(fn) => fn(fn)
+
+If we give this function to itself, it will repeat to no end:
+
+((x) => x(x))((y) => y(y))
+
+same fn, just different variable names for readability. The "y" function
+becomes a variable "x" after the first application, the x function
+repeats to infinity. This is the essence of YC. So how do we make this
+to call our function?
+
+Well Lambda calculus allows only way, same as before, as a function
+parameter:
+
+(yourPreparedFn) =>
+   (x => x(x))(y => yourPreparedFn(number => y(y)(number)))
+
+// The number function exists because I wanted this to be valid JS,
+and JS is not lazy - it's arguments are immediately evaluated, else the
+second part could have been just y=> yourPreparedFn(y(y))
+
+If you try to run the function in your head, you will see that the "y"
+variable is "y" function itself. The first part (x => x(x)) makes that
+happen as it calls the function and passes the function to itself. And
+now you are thinking with portals.
+
+The second part becomes easier to understand. Because y function has a
+reference to itself, it has an ability to loop by simply doing y(y). And
+it can share this ability with your Prepared function. When your Prepared
+function calls factorialFn with the next number, it's not actually calling
+factorialFn - it calls y function that generates the next factorialFn
+and then calls it with the number you passed.
+
+This is it, that's Y combinator:
+
+Y = f => (x => x(x))(x => f(y => x(x)(y)))
+
+You can run this JS to and try to debug or break it for better
+understanding:
+
+((yourPreparedFn) =>
+   (x => x(x))(y => yourPreparedFn(number => y(y)(number))))
+((factorialFn)=>
+  (number) =>  number == 1 ? 1: number * factorialFn(number-1))
+(5)
+
+Don't worry if it takes a long time to get it
